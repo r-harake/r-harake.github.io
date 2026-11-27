@@ -1,134 +1,282 @@
-// Each workspace is also a regular section when scripting is unavailable.
-const views = [...document.querySelectorAll('.view')];
-const papers = [...document.querySelectorAll('.paper-list li')];
-const roles = [...document.querySelectorAll('.role')];
-const viewNames = {
-  desk: 'Flight desk',
-  hangar: 'Aircraft hangar',
-  flow: 'Flow bench',
-  papers: 'Paper library',
-  logbook: 'Engineering logbook'
-};
-const finder = document.querySelector('#finder');
-const findButton = document.querySelector('#find');
-const query = document.querySelector('#query');
-const matches = document.querySelector('#matches');
+// The portfolio remains readable when scripting is disabled.
+const inspect = document.querySelector('#inspect');
+const specimen = document.querySelector('#specimen');
+const caption = document.querySelector('#specimen-caption');
+inspect.hidden = false;
 
-function filterPapers(kind) {
-  let count = 0;
-  for (const paper of papers) {
-    paper.hidden = kind !== 'all' && paper.dataset.kind !== kind;
-    if (!paper.hidden) count++;
-  }
-  for (const button of document.querySelectorAll('[data-filter]')) {
-    button.setAttribute('aria-pressed', String(button.dataset.filter === kind));
-  }
-  document.querySelector('#paper-count').textContent = count + (count === 1 ? ' paper shown' : ' papers shown');
+inspect.addEventListener('click', () => {
+  const enlarged = specimen.classList.toggle('zoomed');
+  inspect.setAttribute('aria-pressed', String(enlarged));
+  inspect.querySelector('.inspect-label').textContent = enlarged ? 'Whole specimen' : 'Wing detail';
+  caption.textContent = enlarged ? 'Wing venation · enlarged illustration' : 'Dragonfly · illustrative plate';
+});
+
+const windows = [...document.querySelectorAll('.work-window')];
+const tray = document.querySelector('#tray');
+const compact = matchMedia('(max-width:760px)');
+const order = [];
+const launchers = new Map();
+let playback = 0;
+const panel = name => document.getElementById('panel-' + name);
+const nameOf = win => win.id.slice(6);
+function front() {
+  return [...order].reverse().find(win => win.dataset.state === 'open');
 }
-
-function showView(moveFocus) {
-  const target = document.getElementById(location.hash.slice(1));
-  const current = target?.closest('.view') || views[0];
-  for (const view of views) view.hidden = view !== current;
-  document.title = 'Rawad Al Harake | ' + viewNames[current.id];
-  document.querySelector('#crumb').textContent = current.id === 'desk' ? '' : ' / ' + viewNames[current.id];
-  for (const link of document.querySelectorAll('footer a')) {
-    if (link.hash === '#' + current.id) link.setAttribute('aria-current', 'page');
-    else link.removeAttribute('aria-current');
+function renderWindows() {
+  const top = front();
+  const active = windows.some(win => win.dataset.state !== 'closed');
+  document.body.classList.toggle('windows-open', active);
+  for (const win of windows) {
+    win.hidden = win.dataset.state !== 'open' || (compact.matches && win !== top);
+    win.classList.toggle('on-top', win === top);
+    win.style.zIndex = String(30 + order.indexOf(win));
+    const button = tray.querySelector('[data-open="' + nameOf(win) + '"]');
+    button.dataset.active = String(win === top);
+    button.dataset.paused = String(win.dataset.state === 'minimized');
+    button.setAttribute('aria-expanded', String(!win.hidden));
   }
-  if (target?.matches('.role')) target.open = true;
-  if (target?.matches('.paper-list li') && target.hidden) filterPapers('all');
-  if (target && target !== current) {
-    target.scrollIntoView({block: 'center'});
-    if (moveFocus) (target.querySelector('summary, a') || target).focus({preventScroll: true});
-  } else {
-    window.scrollTo(0, 0);
-    if (moveFocus) current.querySelector('h1, h2').focus({preventScroll: true});
+  for (const node of document.querySelectorAll('header,footer,main > section,.skip')) node.inert = compact.matches && Boolean(top);
+  if (panel('lab').hidden) stopStroke();
+}
+function raise(win) {
+  const oldIndex = order.indexOf(win);
+  if (oldIndex >= 0) order.splice(oldIndex, 1);
+  order.push(win);
+  renderWindows();
+}
+function constrain(win, x, y) {
+  if (compact.matches || win.classList.contains('expanded')) return;
+  const rect = win.getBoundingClientRect();
+  win.style.setProperty('--wx', Math.min(Math.max(x, 4), Math.max(4, innerWidth - rect.width - 4)) + 'px');
+  win.style.setProperty('--wy', Math.min(Math.max(y, 4), Math.max(4, innerHeight - rect.height - 70)) + 'px');
+}
+function openWindow(name, trigger) {
+  const win = panel(name);
+  const fresh = win.dataset.state === 'closed';
+  if (fresh) launchers.set(name, trigger);
+  win.dataset.state = 'open';
+  raise(win);
+  if (fresh) {
+    const layers = windows.filter(other => other !== win && !other.hidden).length;
+    const x = layers % 2 ? innerWidth - win.offsetWidth - 35 : innerWidth * .075;
+    constrain(win, x, 32 + (layers % 4) * 33);
+  }
+  win.classList.add('revealed');
+  win.focus({preventScroll:true});
+  const preset = trigger?.dataset.mode || trigger?.dataset.preset;
+  if (name === 'lab' && preset) setExperiment(preset);
+  if (name === 'library' && preset) {
+    document.querySelector('#paper-search').value = preset;
+    selectGroup('[data-type]', 'type', 'all');
+    filterLibrary();
   }
 }
-
-document.querySelector('#camera').hidden = false;
-for (const button of document.querySelectorAll('[data-camera]')) {
-  button.addEventListener('click', () => {
-    const camera = button.dataset.camera;
-    for (const image of document.querySelectorAll('#aircraft-views img')) image.hidden = image.id !== 'view-' + camera;
-    for (const note of document.querySelectorAll('[data-note]')) note.hidden = note.dataset.note !== camera;
-    for (const option of document.querySelectorAll('[data-camera]')) option.setAttribute('aria-pressed', String(option === button));
+function hideWindow(win, state) {
+  win.dataset.state = state;
+  win.classList.remove('revealed');
+  if (state === 'closed') win.classList.remove('expanded');
+  setMaxLabel(win);
+  renderWindows();
+  const next = front();
+  const prior = launchers.get(nameOf(win));
+  const fallback = tray.querySelector('[data-open="' + nameOf(win) + '"]');
+  (next || (prior?.getClientRects().length ? prior : fallback)).focus({preventScroll:true});
+}
+function setMaxLabel(win) {
+  const max = win.classList.contains('expanded');
+  const button = win.querySelector('[data-win="max"]');
+  const title = (max ? 'Restore' : 'Maximize') + ' ' + win.querySelector('.window-bar strong').textContent;
+  button.setAttribute('aria-pressed', String(max));
+  button.setAttribute('aria-label', title);
+  button.title = title;
+}
+function maximize(win) {
+  if (compact.matches) return;
+  win.classList.toggle('expanded');
+  setMaxLabel(win);
+  if (!win.classList.contains('expanded')) {
+    const rect = win.getBoundingClientRect();
+    constrain(win, rect.x, rect.y);
+  }
+}
+for (const win of windows) {
+  const bar = win.querySelector('.window-bar');
+  win.addEventListener('focusin', () => { if (front() !== win) raise(win); });
+  win.addEventListener('pointerdown', () => { if (front() !== win) raise(win); }, true);
+  win.querySelector('[data-win="min"]').addEventListener('click', () => hideWindow(win, 'minimized'));
+  win.querySelector('[data-win="close"]').addEventListener('click', () => hideWindow(win, 'closed'));
+  win.querySelector('[data-win="max"]').addEventListener('click', () => maximize(win));
+  bar.addEventListener('dblclick', e => { if (!e.target.closest('button')) maximize(win); });
+  let drag = null;
+  bar.addEventListener('pointerdown', e => {
+    if (e.button !== 0 || compact.matches || win.classList.contains('expanded') || e.target.closest('button')) return;
+    const rect = win.getBoundingClientRect();
+    drag = {x:e.clientX - rect.x, y:e.clientY - rect.y};
+    bar.setPointerCapture(e.pointerId);
   });
+  bar.addEventListener('pointermove', e => {
+    if (drag) constrain(win, e.clientX - drag.x, e.clientY - drag.y);
+  });
+  bar.addEventListener('lostpointercapture', () => { drag = null; });
 }
+document.querySelectorAll('[data-open]').forEach(button => {
+  button.hidden = false;
+  button.addEventListener('click', () => openWindow(button.dataset.open, button));
+});
+tray.hidden = false;
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && front()) hideWindow(front(), 'closed');
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    openWindow('log', document.activeElement);
+    document.querySelector('#project-search').focus();
+  }
+});
+window.addEventListener('resize', () => {
+  renderWindows();
+  for (const win of windows.filter(win => !win.hidden)) {
+    const rect = win.getBoundingClientRect();
+    constrain(win, rect.x, rect.y);
+  }
+});
+function selectGroup(selector, key, value) {
+  document.querySelectorAll(selector).forEach(button => button.setAttribute('aria-pressed', String(button.dataset[key] === value)));
+}
+function wireGroup(key, update) {
+  const selector = '[data-' + key + ']';
+  for (const button of document.querySelectorAll(selector)) {
+    button.addEventListener('click', () => {
+      const value = button.dataset[key];
+      selectGroup(selector, key, value);
+      update(value);
+    });
+  }
+}
+wireGroup('model', model => {
+  for (const figure of document.querySelectorAll('[data-plane]')) figure.hidden = model !== 'both' && figure.dataset.plane !== model;
+});
+wireGroup('angle', angle => {
+  for (const img of document.querySelectorAll('[data-angle-image]')) img.hidden = img.dataset.angleImage !== angle;
+});
 
+// A schematic sweep about the wing root, with identical geometry in both directions.
+const canvas = document.querySelector('#stroke-canvas');
+const ctx = canvas.getContext('2d');
+const phase = document.querySelector('#phase');
+function traceWing(a, opacity, veins) {
+  ctx.save();
+  ctx.translate(360, 250);
+  ctx.rotate(a);
+  ctx.globalAlpha = opacity;
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.bezierCurveTo(-27,-49,-31,-142,-5,-208);
+  ctx.bezierCurveTo(11,-232,49,-157,39,-105);
+  ctx.bezierCurveTo(33,-72,17,-22,0,0);
+  ctx.fillStyle = veins ? '#405f64' : '#213e44';
+  ctx.fill();
+  ctx.strokeStyle = veins ? '#f0b47d' : '#7fafa8';
+  ctx.lineWidth = veins ? 2 : 1;
+  ctx.stroke();
+  if (veins) {
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.quadraticCurveTo(-6,-126,-5,-206);
+    for (let i=1;i<8;i++) {
+      const y=-i*23;
+      ctx.moveTo(-4,y); ctx.lineTo(Math.sin(i/8*Math.PI)*31+4,y-23);
+      ctx.moveTo(-4,y); ctx.lineTo(-Math.sin(i/8*Math.PI)*18-3,y-15);
+    }
+    ctx.lineWidth=1; ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawStroke() {
+  const percent = Number(phase.value);
+  const stage = percent === 0 || percent === 100 ? 'First reversal' : percent === 50 ? 'Second reversal' : percent < 50 ? 'Outward sweep' : 'Return sweep';
+  document.querySelector('#phase-out').value = percent + '% · ' + stage;
+  phase.setAttribute('aria-valuetext', percent + ' percent, ' + stage);
+  if (!ctx) return;
+  ctx.fillStyle='#10282e'; ctx.fillRect(0,0,720,310);
+  ctx.strokeStyle='#244249'; ctx.lineWidth=1; ctx.beginPath();
+  for(let x=0;x<720;x+=30){ctx.moveTo(x,0);ctx.lineTo(x,310);}
+  for(let y=0;y<310;y+=30){ctx.moveTo(0,y);ctx.lineTo(720,y);}
+  ctx.stroke();
+  for (const angle of [-1,-.66,-.33,0,.33,.66,1]) traceWing(angle,.58,false);
+  traceWing(-Math.cos(percent*Math.PI/50),1,true);
+  ctx.fillStyle='#f4c497'; ctx.beginPath(); ctx.arc(360,250,5,0,Math.PI*2); ctx.fill();
+  ctx.font='17px monospace'; ctx.textAlign='center'; ctx.fillText('Wing root',360,285);
+}
+phase.addEventListener('input', () => { stopStroke(); drawStroke(); });
+const play = document.querySelector('#play');
+function stopStroke() {
+  cancelAnimationFrame(playback);
+  playback = 0;
+  play.textContent = 'Play stroke';
+  play.setAttribute('aria-pressed','false');
+}
+play.addEventListener('click', () => {
+  if (playback) { stopStroke(); return; }
+  play.textContent='Pause stroke';
+  play.setAttribute('aria-pressed','true');
+  const start=performance.now()-Number(phase.value)*40;
+  function tick(time) {
+    phase.value=String(Math.round(((time-start)%4000)/40));
+    drawStroke();
+    playback=requestAnimationFrame(tick);
+  }
+  playback=requestAnimationFrame(tick);
+});
+function setExperiment(name) {
+  selectGroup('[data-lab]', 'lab', name);
+  for (const node of document.querySelectorAll('[data-experiment]')) node.hidden = node.dataset.experiment !== name;
+  if (name !== 'wing') stopStroke();
+  else drawStroke();
+}
+wireGroup('lab', setExperiment);
+drawStroke();
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopStroke(); });
 const offset = document.querySelector('#offset');
-document.querySelector('#offset-control').hidden = false;
+offset.setAttribute('aria-valuetext','Centre');
 offset.addEventListener('input', () => {
   const step = Number(offset.value);
-  const name = ['Low', 'Below centre', 'Centre', 'Above centre', 'High'][step + 2];
-  document.querySelector('#cylinder').style.setProperty('--offset', (-step * 1.65) + 'rem');
-  document.querySelector('#position').value = name;
-  offset.setAttribute('aria-valuetext', name);
-  document.querySelector('#apparatus').setAttribute('aria-label', 'Heated cylinder in a tilted square enclosure. Position: ' + name);
+  const label = ['Low','Below centre','Centre','Above centre','High'][step+2];
+  document.querySelector('#source-disc').style.setProperty('--dy',(-step*1.4)+'rem');
+  document.querySelector('#heat-out').value=label;
+  offset.setAttribute('aria-valuetext',label);
+  document.querySelector('.apparatus').setAttribute('aria-label','Heated cylinder inside a tilted square enclosure. Position: '+label);
 });
 
-document.querySelector('.filters').hidden = false;
-for (const button of document.querySelectorAll('[data-filter]')) {
-  button.addEventListener('click', () => filterPapers(button.dataset.filter));
+const shelf = document.querySelector('#shelf');
+for (const record of document.querySelectorAll('.paper-list li')) {
+  const item = document.createElement('li');
+  item.dataset.kind = record.querySelector('.kind').textContent.includes('Conference') ? 'conference' : 'journal';
+  const title = record.querySelector('h3 a').cloneNode(true);
+  const author = document.createElement('small');
+  author.textContent = record.querySelector('p').textContent;
+  const citation = document.createElement('small');
+  citation.textContent = record.querySelector('.year').textContent + ' · ' + record.querySelector('p:last-child').textContent;
+  item.append(title,author,citation);
+  shelf.append(item);
 }
-
-// Build the search index from the same records visitors can read.
-const records = views.slice(1).map(view => ({
-  id: view.id,
-  title: viewNames[view.id] + ' · ' + view.querySelector('h2').textContent,
-  text: view.querySelector('.summary').textContent
-}));
-records.push({
-  id: 'flapping-wings', title: 'MSc research · Flapping-wing aerodynamics',
-  text: document.querySelector('.research-note').textContent
-});
-for (const paper of papers) records.push({id: paper.id, title: paper.querySelector('h3').textContent, text: paper.textContent});
-for (const role of roles) records.push({id: role.id, title: role.querySelector('strong').textContent, text: role.textContent});
-records.push({id: 'toolkit', title: 'Engineering tools & education', text: document.querySelector('.bio').textContent});
-
-function updateMatches() {
-  const term = query.value.trim().toLowerCase();
-  const words = term.split(/\s+/);
-  const results = term ? records.filter(record => words.every(word => (record.title + ' ' + record.text).toLowerCase().includes(word))) : records.slice(0, 4);
-  matches.replaceChildren();
-  for (const result of results) {
-    const row = document.createElement('li');
-    const link = document.createElement('a');
-    link.href = '#' + result.id;
-    link.textContent = result.title;
-    link.addEventListener('click', () => {
-      finder.close();
-      if (location.hash === link.hash) showView(true);
-    });
-    row.append(link);
-    matches.append(row);
+function filterRecords(input, selector, tagKey, selected, allToken, output, singular, plural) {
+  const terms = input.value.toLowerCase().trim().split(/\s+/);
+  let count=0;
+  for (const item of document.querySelectorAll(selector)) {
+    const validType = selected === allToken || item.dataset[tagKey] === selected;
+    const text = item.textContent.toLowerCase();
+    item.hidden = !validType || !terms.every(term => text.includes(term));
+    if (!item.hidden) count++;
   }
-  document.querySelector('#match-count').textContent = results.length ? (term ? results.length + ' found' : '') : 'No matches. Try an aircraft, a tool or a paper title.';
+  output.textContent = count ? count+' '+(count===1?singular:plural) : 'No matches. Try another search or filter.';
 }
-
-function openFinder() {
-  if (finder.open) return;
-  query.value = '';
-  updateMatches();
-  finder.showModal();
-  query.focus();
+function filterLibrary() {
+  filterRecords(document.querySelector('#paper-search'),'#shelf li','kind',document.querySelector('[data-type][aria-pressed="true"]').dataset.type,'all',document.querySelector('#paper-total'),'paper','papers');
 }
-
-if (typeof finder.showModal === 'function') {
-  findButton.hidden = false;
-  findButton.addEventListener('click', openFinder);
-  query.addEventListener('input', updateMatches);
-  document.querySelector('#close-finder').addEventListener('click', () => finder.close());
-  document.addEventListener('keydown', event => {
-    if (event.key !== '/' || event.ctrlKey || event.altKey || event.metaKey || event.target.closest('input, textarea, [contenteditable]')) return;
-    event.preventDefault();
-    openFinder();
-  });
+function filterLog() {
+  filterRecords(document.querySelector('#project-search'),'.record','discipline',document.querySelector('[data-field][aria-pressed="true"]').dataset.field,'All',document.querySelector('#project-total'),'entry','entries');
 }
-document.querySelector('.skip').addEventListener('click', event => {
-  event.preventDefault();
-  document.getElementById('content').focus();
-});
-window.addEventListener('hashchange', () => showView(true));
-showView(false);
+wireGroup('type', filterLibrary);
+wireGroup('field', filterLog);
+document.querySelector('#paper-search').addEventListener('input',filterLibrary);
+document.querySelector('#project-search').addEventListener('input',filterLog);
+filterLog();
+filterLibrary();
