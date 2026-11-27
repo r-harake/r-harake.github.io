@@ -64,6 +64,13 @@ function openWindow(name, trigger) {
   win.classList.add('revealed');
   win.focus({preventScroll:true});
   const preset = trigger?.dataset.mode || trigger?.dataset.preset;
+  if (name === 'log' && (trigger?.dataset.entry || trigger?.closest('.desk-links'))) {
+    document.querySelector('#project-search').value = trigger.dataset.entry || '';
+    selectGroup('[data-field]', 'field', 'All');
+    filterLog();
+    const selected = win.querySelector('.record:not([hidden])');
+    if (selected && trigger.dataset.entry) selected.open = true;
+  }
   if (name === 'lab' && preset) setExperiment(preset);
   if (name === 'library' && preset) {
     document.querySelector('#paper-search').value = preset;
@@ -280,3 +287,11 @@ document.querySelector('#paper-search').addEventListener('input',filterLibrary);
 document.querySelector('#project-search').addEventListener('input',filterLog);
 filterLog();
 filterLibrary();
+
+// The first sheet is readable even without JavaScript.
+document.querySelector('.notebook-tabs').hidden = false;
+wireGroup('pick', name => {
+  for (const sheet of document.querySelectorAll('[data-sheet]')) {
+    sheet.hidden = sheet.dataset.sheet !== name;
+  }
+});

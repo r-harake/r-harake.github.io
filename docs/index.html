@@ -7,8 +7,8 @@
 <meta name="description" content="Rawad Al Harake’s work in aeronautical engineering, computational fluid dynamics and bio-inspired flight.">
 <title>Rawad Al Harake · Aeronautical Engineering</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css">
-<script defer src="interaction.js"></script>
+<link rel="stylesheet" href="style.css?v=08d08014bbd5">
+<script defer src="interaction.js?v=854afbd840a7"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -19,15 +19,38 @@
 </div>
 </header>
 <main id="main">
-<section class="hero" aria-labelledby="hero-title">
-<div class="hero-art" id="specimen"><img width="1536" height="1024" fetchpriority="high" src="assets/dragonfly.webp" alt="Illustrated dragonfly with translucent wings and a fine network of copper-coloured veins."></div>
-<div class="wrap hero-inner">
-<div class="hero-copy"><p class="eyebrow pale"><i class="rule"></i>Aeronautical engineering</p>
-<h1 id="hero-title">The shape<br><em>of flight.</em></h1>
-<p class="intro">I’m Rawad Al Harake, an aeronautical engineer. My work spans aircraft design, structures and fluid dynamics. Lately, I’ve been studying what happens when an insect wing reverses its stroke.</p>
-<div class="actions"><button class="button" data-open="log" hidden>Open my project log</button><noscript><a class="button" href="#work">Explore my work</a></noscript><a class="text-link" href="#publications">Publications</a></div></div>
-<div class="specimen-tools"><p><span class="micro">Flight study</span><span id="specimen-caption">Dragonfly · illustrative plate</span></p><button type="button" id="inspect" hidden aria-pressed="false" aria-controls="specimen"><span aria-hidden="true" class="magnifier"></span><span class="inspect-label">Wing detail</span></button></div>
-</div></section>
+<section class="notebook-desk" aria-labelledby="hero-title">
+  <div class="wrap desk-grid">
+    <div class="desk-intro">
+      <p class="eyebrow"><i class="rule"></i>Aeronautical engineering</p>
+      <h1 id="hero-title">Rawad<br><em>Al Harake.</em></h1>
+      <p>My work ranges from the shape of an aircraft wing to the loads inside its cabin. For my master’s, I’m studying what happens when an insect wing changes direction.</p>
+      <div class="desk-links"><button class="button" data-open="log" hidden>Browse my project log</button><a href="#publications">Publications</a><noscript><a href="#work">Selected work</a></noscript></div>
+    </div>
+    <section class="notebook" id="notebook" aria-labelledby="notebook-title">
+      <div class="notebook-head"><span class="binding" aria-hidden="true"></span><h2 id="notebook-title">Engineering notebook</h2></div>
+      <div class="notebook-tabs" role="group" aria-label="Choose a discipline" hidden>
+        <button data-pick="research" aria-pressed="true">Research</button><button data-pick="design" aria-pressed="false">Design</button><button data-pick="structures" aria-pressed="false">Structures</button><button data-pick="practice" aria-pressed="false">Practice</button>
+      </div>
+      <div data-sheet="research">
+        <div class="wing-plate" id="specimen"><img src="assets/dragonfly.webp" width="1536" height="1024" fetchpriority="high" alt="Illustrated dragonfly with translucent wings and copper-coloured veins."><button id="inspect" class="zoom-control" hidden aria-pressed="false" aria-controls="specimen"><span class="inspect-label">Wing detail</span></button><span id="specimen-caption">Dragonfly · illustrative plate</span></div>
+        <div class="sheet-copy"><p class="eyebrow">MSc research · In progress</p><h3>The shape of flight.</h3><p>A wing slows, turns and meets the air it set in motion on the last stroke. I’m studying that interaction with CFD.</p><button class="launch-text" data-open="lab" data-mode="wing" hidden>Move the wing through a stroke</button></div>
+      </div>
+      <div data-sheet="design" hidden>
+        <div class="jet-plates"><figure><img src="assets/piero-profile.webp" alt="Piero Jet I profile" loading="lazy"><figcaption>Jet I</figcaption></figure><figure><img src="assets/piero-iii-profile.webp" alt="Piero Jet III profile" loading="lazy"><figcaption>Jet III</figcaption></figure></div>
+        <div class="sheet-copy"><p class="eyebrow">Aircraft design · Moving Terrain AG</p><h3>From section to surface.</h3><p>I use SolidWorks to turn airfoil sections into wing surfaces and model exterior components for the Piero series. Both renderings are by Piero.</p><button class="launch-text" data-open="hangar" hidden>Inspect the two aircraft</button></div>
+      </div>
+      <div data-sheet="structures" hidden>
+        <div class="load-sheet"><p class="sheet-note">Structural analysis</p><ol><li>Applied loads</li><li>Displacements &amp; stresses</li><li>Substantiation report</li></ol></div>
+        <div class="sheet-copy"><p class="eyebrow">FEA stress engineering · FTMSolutions</p><h3>Inside the cabin.</h3><p>I assessed aircraft interior structures for the Boeing 787 and Airbus A380, then documented the loads, displacements and stresses in substantiation reports.</p><button class="launch-text" data-open="log" data-entry="Aircraft cabin interiors" hidden>Read my structures entry</button></div>
+      </div>
+      <div data-sheet="practice" hidden>
+        <div class="field-dates"><div><span>Summer 2023</span><strong>Aircraft maintenance</strong></div><div><span>2024–25</span><strong>Formula Student bodywork</strong></div></div>
+        <div class="sheet-copy"><p class="eyebrow">Maintenance &amp; motorsport</p><h3>On the workshop floor.</h3><p>I spent a summer supporting aircraft maintenance. With the Balamand Racing Team, my part was aerodynamic design and optimization of bodywork for Formula Student UK.</p><button class="launch-text" data-open="log" data-entry="Aircraft maintenance" hidden>Maintenance entry</button> <button class="launch-text" data-open="log" data-entry="Formula Student bodywork" hidden>Racing entry</button></div>
+      </div>
+    </section>
+  </div>
+</section>
 
 <div class="tray" id="tray" hidden><div class="tray-inner"><span class="tray-title">Worktable</span><button data-open="log" aria-controls="panel-log"><i class="glyph log" aria-hidden="true"></i><span>Project log</span></button><button data-open="lab" aria-controls="panel-lab"><i class="glyph wave" aria-hidden="true"></i><span>Wing &amp; flow lab</span></button><button data-open="hangar" aria-controls="panel-hangar"><i class="glyph air" aria-hidden="true"></i><span>Aircraft viewer</span></button><button data-open="library" aria-controls="panel-library"><i class="glyph book" aria-hidden="true"></i><span>Paper library</span></button></div></div>
 <section id="work" class="wrap section">
