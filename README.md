@@ -2,7 +2,9 @@
 
 Open docs/index.html in a browser to use the site locally. The self-contained portfolio-preview.html also works offline. On GitHub, choose **Download raw file** to save that preview.
 
-The page brings together research, publications, projects, roles, education and technical practice. Use the worktable to open a searchable project log, explore research geometry, compare Piero aircraft or browse papers. Drag desktop windows by their title bars. Use the title-bar buttons to minimize, maximize or close them. The worktable restores minimized windows. Small screens show one sheet at a time. Ctrl/Cmd+K opens project search and Escape closes the front window.
+The page brings together research, publications, projects, roles, education and technical practice. Move the pointer over the opening wing or drag it on a touchscreen to change the view. The pitch slider supports the keyboard. Pause flow stops the traces. Reduced-motion preferences start the scene still. The Contact me links lead to the email address in the contact section.
+
+Use the worktable to open a searchable project log, explore research geometry, compare Piero aircraft or browse papers. Drag desktop windows by their title bars. Use the title-bar buttons to minimize, maximize or close them. The worktable restores minimized windows. Small screens show one sheet at a time. Ctrl/Cmd+K opens project search and Escape closes the front window.
 
 ## Editing
 
@@ -10,7 +12,7 @@ Edit content and project entries in docs/index.html. The paper library reads dir
 
 ## Images and figures
 
-The opening dragonfly is a generated editorial illustration. The moving wing and the heated enclosure are original explanatory schematics. Published data are available in the linked studies.
+The opening tapered wing, flow traces and heated enclosure are original explanatory schematics. The dragonfly image in the research section is a generated editorial illustration. Published data are available in the linked studies.
 
 The aircraft images are from Piero’s official Jet I and Jet III galleries. They show team designs. Rawad’s portfolio describes his work modeling exterior geometry. Gallery credit and source links appear in the viewer.
 

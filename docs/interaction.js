@@ -1,16 +1,3 @@
-// The portfolio remains readable when scripting is disabled.
-const inspect = document.querySelector('#inspect');
-const specimen = document.querySelector('#specimen');
-const caption = document.querySelector('#specimen-caption');
-inspect.hidden = false;
-
-inspect.addEventListener('click', () => {
-  const enlarged = specimen.classList.toggle('zoomed');
-  inspect.setAttribute('aria-pressed', String(enlarged));
-  inspect.querySelector('.inspect-label').textContent = enlarged ? 'Whole specimen' : 'Wing detail';
-  caption.textContent = enlarged ? 'Wing venation · enlarged illustration' : 'Dragonfly · illustrative plate';
-});
-
 const windows = [...document.querySelectorAll('.work-window')];
 const tray = document.querySelector('#tray');
 const compact = matchMedia('(max-width:760px)');
@@ -64,7 +51,7 @@ function openWindow(name, trigger) {
   win.classList.add('revealed');
   win.focus({preventScroll:true});
   const preset = trigger?.dataset.mode || trigger?.dataset.preset;
-  if (name === 'log' && (trigger?.dataset.entry || trigger?.closest('.desk-links'))) {
+  if (name === 'log' && (trigger?.dataset.entry || trigger?.closest('.flight-intro'))) {
     document.querySelector('#project-search').value = trigger.dataset.entry || '';
     selectGroup('[data-field]', 'field', 'All');
     filterLog();
@@ -288,10 +275,147 @@ document.querySelector('#project-search').addEventListener('input',filterLog);
 filterLog();
 filterLibrary();
 
-// The first sheet is readable even without JavaScript.
-document.querySelector('.notebook-tabs').hidden = false;
-wireGroup('pick', name => {
-  for (const sheet of document.querySelectorAll('[data-sheet]')) {
-    sheet.hidden = sheet.dataset.sheet !== name;
+// Project a tapered wing and illustrative flow traces onto a small 2D canvas.
+function mountFlowIllustration() {
+  const field = document.querySelector('#wind-field');
+  const drawing = field.getContext('2d');
+  if (!drawing) return;
+  const stage = field.parentElement;
+  const slider = document.querySelector('#wing-pitch');
+  const output = document.querySelector('#pitch-output');
+  const toggle = document.querySelector('#wind-motion');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const radians = Math.PI / 180;
+  let moving = !reduced.matches;
+  let visible = true;
+  let frame = 0;
+  let lastTime = 0;
+  let clock = 0;
+  let yaw = -0.5, desiredYaw = yaw;
+  let pitch = Number(slider.value), desiredPitch = pitch;
+  let width = 1, height = 1;
+
+  function surface(s, u, side) {
+    const chord = .73 - .31 * s;
+    const thickness = .85 * (.2969*Math.sqrt(u) - .126*u - .3516*u*u + .2843*u**3 - .1036*u**4);
+    return [(u-.48)*chord + .19*(s-.5), (s-.5)*1.03, chord*(.028*Math.sin(Math.PI*u) + side*thickness) + .07*s];
   }
-});
+  const ribs = Array.from({length:27}, (_, i) => {
+    const s = i / 26;
+    const top = Array.from({length:41}, (_, j) => surface(s,j/40,1));
+    const bottom = Array.from({length:41}, (_, j) => surface(s,1-j/40,-1));
+    return [...top,...bottom];
+  });
+  const spars = [0,.025,.08,.16,.26,.39,.54,.70,.85,1].map(u =>
+    Array.from({length:27}, (_, i) => surface(i/26,u,1))
+  );
+
+  function render() {
+    drawing.clearRect(0,0,width,height);
+    const scale=Math.min(width*.73,height*1.27);
+    const cy=Math.cos(yaw), sy=Math.sin(yaw);
+    const cp=Math.cos(pitch*radians), sp=Math.sin(pitch*radians);
+    function project(point) {
+      const [x,s,z]=point;
+      const along=x*cp+z*sp, up=z*cp-x*sp;
+      return [width*.49+(along*cy-s*sy)*scale, height*.51-((along*sy+s*cy)*.51+up*.86)*scale];
+    }
+    function path(points) {
+      drawing.beginPath();
+      points.forEach(([x,y],index) => index ? drawing.lineTo(x,y) : drawing.moveTo(x,y));
+    }
+    // The traces indicate flow direction. Their curvature is artistic, not CFD output.
+    for (let lane=0;lane<19;lane++) {
+      const row=(lane+.5)/19;
+      function trace(t) {
+        const spread=row-.5;
+        const lift=Math.exp(-((t-.51)**2)/.051)*(.028+.075*Math.exp(-spread*spread/.10));
+        const bend=(spread<0?-1:1)*lift + (pitch/18)*.048*Math.sin(Math.PI*t);
+        return [t*width, (row*.89+.055+bend+.02*Math.sin(t*6+row*3))*height];
+      }
+      const points=Array.from({length:65},(_,j)=>trace(j/64));
+      path(points); drawing.strokeStyle='rgba(101,177,173,.22)'; drawing.lineWidth=.85; drawing.stroke();
+      for (let i=0;i<2;i++) {
+        const t=(clock*.085 + lane*.137+i*.5)%1;
+        const [x,y]=trace(t); const [tx,ty]=trace(Math.max(0,t-.023));
+        drawing.beginPath(); drawing.moveTo(tx,ty); drawing.lineTo(x,y);
+        drawing.strokeStyle='rgba(153,226,213,.8)'; drawing.lineWidth=1.35; drawing.stroke();
+      }
+    }
+    // Fill each spanwise strip in depth order so the front edge masks the far surface.
+    for(let i=ribs.length-1;i>=0;i--) {
+      const rib=ribs[i].map(project);
+      if(i>0){
+        const near=ribs[i-1].slice(0,41).map(project);
+        path([...rib.slice(0,41),...near.reverse()]);
+        drawing.closePath(); drawing.fillStyle='rgba(25,64,69,.94)'; drawing.fill();
+      }
+      path(rib); drawing.closePath();
+      if(i===0){ drawing.fillStyle='#18383f'; drawing.fill(); }
+      drawing.lineWidth=i===0||i===26?2:1;
+      drawing.strokeStyle=i===0||i===26?'#f5ba83':'rgba(225,183,139,.73)'; drawing.stroke();
+    }
+    spars.forEach((line,i)=>{
+      path(line.map(project)); drawing.lineWidth=i===0||i===spars.length-1?1.8:.8;
+      drawing.strokeStyle=i===0||i===spars.length-1?'#f8c694':'rgba(174,218,203,.66)';drawing.stroke();
+    });
+  }
+
+  function schedule() {
+    if (!frame && visible && !document.hidden) frame=requestAnimationFrame(animate);
+  }
+  function animate(now) {
+    frame=0;
+    const delta=lastTime ? Math.min((now-lastTime)/1000,.06) : 1/60;
+    lastTime=now;
+    const blend=reduced.matches?1:1-Math.exp(-14*delta);
+    yaw+=(desiredYaw-yaw)*blend; pitch+=(desiredPitch-pitch)*blend;
+    if(moving) clock+=delta;
+    render();
+    if(moving || Math.abs(yaw-desiredYaw)>.0005 || Math.abs(pitch-desiredPitch)>.015) schedule();
+  }
+  function resize() {
+    const bounds=stage.getBoundingClientRect();
+    width=Math.max(1,bounds.width); height=Math.max(1,bounds.height);
+    const ratio=Math.min(devicePixelRatio||1,2);
+    field.width=Math.round(width*ratio); field.height=Math.round(height*ratio);
+    drawing.setTransform(ratio,0,0,ratio,0,0);
+    render();
+  }
+  function changePitch(value) {
+    desiredPitch=Math.round(value);
+    slider.value=String(desiredPitch);
+    output.value=desiredPitch+'°';
+    slider.setAttribute('aria-valuetext',desiredPitch+' degrees');
+    schedule();
+  }
+  function steer(event) {
+    if (event.pointerType==='touch' && event.type==='pointermove' && !event.buttons) return;
+    if (reduced.matches && event.type==='pointermove' && !event.buttons) return;
+    const rect=stage.getBoundingClientRect();
+    const bound=value=>Math.min(1,Math.max(0,value));
+    desiredYaw=-.5+(bound((event.clientX-rect.left)/rect.width)-.5)*1.04;
+    changePitch((.5-bound((event.clientY-rect.top)/rect.height))*36);
+  }
+  function syncToggle() { toggle.textContent=moving?'Pause flow':'Play flow'; }
+  slider.addEventListener('input',()=>changePitch(Number(slider.value)));
+  // Moving on the introduction or on the model steers the same illustration.
+  const cover=field.closest('.flight-cover');
+  cover.addEventListener('pointermove',event=>{
+    if (event.target.closest('input,button,a,figcaption,.pitch-control')) return;
+    if (event.pointerType==='touch' && !stage.contains(event.target)) return;
+    steer(event);
+  });
+  stage.addEventListener('pointerdown',steer);
+  toggle.addEventListener('click',()=>{moving=!moving;syncToggle();lastTime=0;schedule();});
+  reduced.addEventListener('change',()=>{moving=!reduced.matches;syncToggle();schedule();});
+  document.addEventListener('visibilitychange',()=>{lastTime=0;if(!document.hidden)schedule();});
+  new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;if(visible){lastTime=0;schedule();}else{cancelAnimationFrame(frame);frame=0;} }).observe(stage);
+  field.hidden=false;
+  document.querySelector('#wing-fallback').hidden=true;
+  document.querySelector('.pitch-control').hidden=false;
+  toggle.hidden=false;
+  new ResizeObserver(resize).observe(stage);
+  resize();syncToggle();schedule();
+}
+mountFlowIllustration();
