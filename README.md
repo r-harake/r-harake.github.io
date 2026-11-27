@@ -1,26 +1,20 @@
-# Rawad Al Harake · Flight desk
+# Rawad Al Harake · The shape of flight
 
-## Private review
+Open docs/index.html in a browser to use the site locally. The self-contained portfolio-preview.html also works offline. On GitHub, choose **Download raw file** to save that preview.
 
-Open [the offline preview](portfolio-preview.html), choose **Download raw file** in GitHub’s file toolbar and open the downloaded HTML in a browser. Choose a workspace on the desk or press **/** to find a project, role, tool or publication. Use the Flight desk link to return home. On a narrow screen, the name in the header returns home.
+The page brings together research, publications, projects, roles, education and technical practice. Use the worktable to open a searchable project log, explore research geometry, compare Piero aircraft or browse papers. Drag desktop windows by their title bars. Use the title-bar buttons to minimize, maximize or close them. The worktable restores minimized windows. Small screens show one sheet at a time. Ctrl/Cmd+K opens project search and Escape closes the front window.
 
-## Updating the site
+## Editing
 
-Edit the relevant section of docs/index.html to update the biography, roles or publication entries. Each paper has a unique id and a data-kind of journal or conference. Search reads the titles and descriptions from the page. The layout is in docs/style.css and the workspace controls are in docs/interaction.js. Open docs/index.html to preview your edits. The single-file preview is a snapshot of the review version.
+Edit content and project entries in docs/index.html. The paper library reads directly from the bibliography. docs/style.css holds the editorial and workspace styles, and docs/interaction.js contains the controls. docs is the GitHub Pages publishing directory. portfolio-preview.html is a portable snapshot.
 
-## Aircraft imagery
+## Images and figures
 
-The aircraft images are renderings from [Piero’s official Jet I gallery](https://piero.aero/gallery/gallery-pji.html). Credit belongs to Piero. The site describes Rawad’s contributions to aircraft geometry separately from the team renderings. The private draft uses optimized WebP versions of these gallery files.
+The opening dragonfly is a generated editorial illustration. The moving wing and the heated enclosure are original explanatory schematics. Published data are available in the linked studies.
 
-| Local image | Original rendering |
-| --- | --- |
-| piero-flight.webp | [Coastal view](https://piero.aero/assets/img/gallery/PJ_I/renderings/23.png) |
-| piero-plan.webp | [Wing view](https://piero.aero/assets/img/gallery/PJ_I/renderings/05.png) |
-| piero-profile.webp | [Side view](https://piero.aero/assets/img/gallery/PJ_I/renderings/02.png) |
-| piero-aft.webp | [Rear view](https://piero.aero/assets/img/gallery/PJ_I/renderings/07.png) |
+The aircraft images are from Piero’s official Jet I and Jet III galleries. They show team designs. Rawad’s portfolio describes his work modeling exterior geometry. Gallery credit and source links appear in the viewer.
 
-The flow bench is an original interactive schematic of a published study. Its slider illustrates the position of the heat source. The article contains the numerical results.
-
-## Hosting
-
-The docs directory contains the hostable site. Public release awaits Rawad’s approval.
+| Model | Profile | Wing | Aft |
+| --- | --- | --- | --- |
+| [Jet I](https://piero.aero/gallery/gallery-pji.html) | [02](https://piero.aero/assets/img/gallery/PJ_I/renderings/02.png) | [05](https://piero.aero/assets/img/gallery/PJ_I/renderings/05.png) | [07](https://piero.aero/assets/img/gallery/PJ_I/renderings/07.png) |
+| [Jet III](https://piero.aero/gallery/gallery-pjiii.html) | [02](https://piero.aero/assets/img/gallery/PJ_III/renderings/02.png) | [04](https://piero.aero/assets/img/gallery/PJ_III/renderings/04.png) | [09](https://piero.aero/assets/img/gallery/PJ_III/renderings/09.png) |
