@@ -1,22 +1,15 @@
-# Rawad Al Harake · The shape of flight
+# Rawad Al Harake · Aeronautical Engineering
 
-Open docs/index.html in a browser to use the site locally. The self-contained portfolio-preview.html also works offline. On GitHub, choose **Download raw file** to save that preview.
+The portfolio is a static website published by GitHub Pages from `docs/` on `main`. Open `docs/index.html` locally to review changes. The single-file `portfolio-preview.html` includes the styles, scripts and images for offline review.
 
-The page brings together research, publications, projects, roles, education and technical practice. Move the pointer over the opening wing or drag it on a touchscreen to change the view. The pitch slider supports the keyboard. Pause flow stops the traces. Reduced-motion preferences start the scene still. The Contact me links lead to the email address in the contact section.
+## Updating the portfolio
 
-Use the worktable to open a searchable project log, explore research geometry, compare Piero aircraft or browse papers. Drag desktop windows by their title bars. Use the title-bar buttons to minimize, maximize or close them. The worktable restores minimized windows. Small screens show one sheet at a time. Ctrl/Cmd+K opens project search and Escape closes the front window.
+Edit the text, project figures, publication entries and contact links in `docs/index.html`. Put public-ready, optimized images in `docs/assets/`. The portfolio uses image descriptions and captions to distinguish design renders, research illustrations and analysis results.
 
-## Editing
+The page layout is in `docs/style.css`, and the university project layouts are in `docs/projects.css`. The surface-pressure demonstration has its own `wing.js` and `wing.css`. The other page interactions live in `interaction.js`.
 
-Edit content and project entries in docs/index.html. The paper library reads directly from the bibliography. docs/style.css holds the editorial and workspace styles, and docs/interaction.js contains the controls. docs is the GitHub Pages publishing directory. portfolio-preview.html is a portable snapshot.
+## Image and research credits
 
-## Images and figures
+The green-and-white wildfire UAV scenes are enhanced design renderings from the BSc project. The agricultural UAV cutaway illustrates the battery and electronics listed in the course report. Their positions in the render are illustrative. The composite valve rendering is based on the team’s closed-valve CAD assembly. Its original CAD and layup comparison figures appear alongside it. Piero supplied the Jet I and Jet III gallery views, with links to the original galleries beneath the images. The dragonfly image is an editorial illustration. The flapping wing and heated enclosure figures demonstrate motion and geometry.
 
-The opening tapered wing, flow traces and heated enclosure are original explanatory schematics. The dragonfly image in the research section is a generated editorial illustration. Published data are available in the linked studies.
-
-The aircraft images are from Piero’s official Jet I and Jet III galleries. They show team designs. Rawad’s portfolio describes his work modeling exterior geometry. Gallery credit and source links appear in the viewer.
-
-| Model | Profile | Wing | Aft |
-| --- | --- | --- | --- |
-| [Jet I](https://piero.aero/gallery/gallery-pji.html) | [02](https://piero.aero/assets/img/gallery/PJ_I/renderings/02.png) | [05](https://piero.aero/assets/img/gallery/PJ_I/renderings/05.png) | [07](https://piero.aero/assets/img/gallery/PJ_I/renderings/07.png) |
-| [Jet III](https://piero.aero/gallery/gallery-pjiii.html) | [02](https://piero.aero/assets/img/gallery/PJ_III/renderings/02.png) | [04](https://piero.aero/assets/img/gallery/PJ_III/renderings/04.png) | [09](https://piero.aero/assets/img/gallery/PJ_III/renderings/09.png) |
+The wing viewer cites its experimental reference in the explanation beneath the controls. Journal and conference publication titles link to their records.

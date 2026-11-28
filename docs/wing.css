@@ -1,0 +1,26 @@
+.aero-demo { margin:0; min-width:0; color:#f3f3e8; }
+.aero-head { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:.25rem 1rem; padding-bottom:.4rem; border-bottom:1px solid #6d929659; }
+.aero-head strong { font:normal clamp(1.25rem,2vw,1.75rem)/1.2 var(--serif, Georgia, serif); }
+.aero-status { color:#b4d7ce; font:500 .8rem/1.4 ui-monospace,monospace; }
+.aero-stage { position:relative; width:100%; aspect-ratio:2.03; overflow:hidden; }
+.aero-stage img,.aero-stage canvas { width:100%; height:100%; display:block; object-fit:contain; }
+.aero-demo [hidden] { display:none !important; }
+#aero-field { cursor:grab; touch-action:pan-y pinch-zoom; }
+#aero-field:active { cursor:grabbing; }
+#aero-field:focus-visible { outline:2px solid #fbc99a; outline-offset:-3px; }
+.aero-scale { display:grid; grid-template-columns:auto minmax(0,1fr); align-items:start; gap:.85rem; color:#d8e5df; font:.8rem/1.2 ui-monospace,monospace; }
+.aero-ramp { height:6px; border-radius:5px; margin:.25em 0 .35rem; background:linear-gradient(to right,#4b469d,#376dae,#33acae,#a6dbc5,#ecdba2,#ed986f); }
+.aero-ticks { display:flex; justify-content:space-between; font-size:.75rem; color:#b5c9c6; }
+.aero-variables { margin:.75rem 0 .4rem; padding:.75rem 0 .15rem; border-top:1px solid #6d929659; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(.75rem,2vw,1.75rem); }
+.aero-variables label { display:grid; grid-template-columns:1fr auto; gap:.2rem .3rem; align-items:center; font:500 .88rem/1.25 var(--sans,system-ui,sans-serif); }
+.aero-variables output { color:#ffd1a3; font:.9rem/1.25 ui-monospace,monospace; }
+.aero-variables input { grid-column:1/-1; width:100%; margin:0; padding:0; accent-color:#f0b786; cursor:pointer; min-height:1.5rem; }
+.aero-tools { display:flex; align-items:center; justify-content:space-between; gap:.65rem; }
+.aero-tools span,.aero-method { color:#c4d5d0; font-size:.84rem; line-height:1.4; }
+.aero-tools button { flex:none; color:#e6eee9; background:transparent; border:1px solid #718c8a; border-radius:3px; font:inherit; font-size:.84rem; padding:.4rem .7rem; min-height:2.5rem; }
+.aero-tools button:disabled { color:#a6bab7; border-color:#405755; cursor:default; }
+.aero-method { margin:.4rem 0 0; }
+.aero-method summary { cursor:pointer; text-decoration:underline; text-underline-offset:.17em; }
+.aero-method p { color:#c4d5d0; margin:.5rem 0 0; max-width:70ch; }
+.aero-method a { color:#f1c799; }
+@media(max-width:480px){.aero-stage{aspect-ratio:1.65}.aero-variables label{font-size:.85rem}.aero-status{font-size:.75rem}}

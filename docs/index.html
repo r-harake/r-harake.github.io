@@ -7,15 +7,18 @@
 <meta name="description" content="Rawad Al Harake’s work in aeronautical engineering, computational fluid dynamics and bio-inspired flight.">
 <title>Rawad Al Harake · Aeronautical Engineering</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css?v=47aa05f00289">
-<script defer src="interaction.js?v=96e593b6f3b7"></script>
+<link rel="stylesheet" href="style.css?v=41456b69a449">
+<script defer src="interaction.js?v=04c3d92393ed"></script>
+<link rel="stylesheet" href="wing.css?v=7a7aaeff95e5">
+<link rel="stylesheet" href="projects.css?v=362cf7dcc71e">
+<script defer src="wing.js?v=c75b5a8169bd"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="mast" id="top">
 <div class="wrap navbar">
 <a class="wordmark" href="#top"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>Rawad Al Harake</a>
-<nav aria-label="Main"><a href="#work">Work</a><a href="#publications">Publications</a><a href="#experience">Experience</a><a href="#about">About</a><a class="nav-contact" href="#contact">Contact me</a></nav>
+<nav aria-label="Main"><a href="#work">Projects</a><a href="#research">Research</a><a href="#publications">Publications</a><a href="#experience">Experience</a><a href="#about">About</a><a class="nav-contact" href="#contact">Contact me</a></nav>
 </div>
 </header>
 <main id="main">
@@ -24,35 +27,100 @@
     <div class="flight-intro">
       <p class="eyebrow pale"><i class="rule"></i>Aeronautical engineer &amp; researcher</p>
       <h1 id="hero-title">Rawad <br><em>Al Harake.</em></h1>
-      <p class="intro">I work where aircraft design, structures and fluid dynamics meet. My projects have taken me from race-car bodywork and cabin interiors to the aerodynamics of an insect’s wing.</p>
-      <div class="actions"><button class="button" data-open="log" hidden>Explore my work</button><noscript><a class="button" href="#work">Explore my work</a></noscript><a class="text-link" href="#contact">Contact me</a></div>
+      <p class="intro">I’m an aeronautical engineer working across aircraft design, structures and fluid dynamics. I’ve modeled business-jet wings, studied how heat moves through air, and followed an insect wing through a flapping stroke.</p>
+      <div class="actions"><a class="button" href="#work">Explore my projects</a><a class="text-link" href="#contact">Contact me</a></div>
     </div>
-    <figure class="wind-display" aria-labelledby="wind-title">
-      <div class="wind-stage"><img id="wing-fallback" src="assets/wing-sections.webp" width="720" height="387" alt="Wireframe illustration of sections through a tapered wing."><canvas id="wind-field" aria-label="Illustrative wireframe wing with moving airflow traces" hidden></canvas></div>
-      <figcaption><div><strong id="wind-title">Wing in a flow field</strong><span class="pointer-help">Move your cursor to rotate the wing.</span><span class="touch-help">Drag across the wing to rotate it.</span></div>
-      <button id="wind-motion" type="button" hidden>Pause flow</button></figcaption>
-      <div class="pitch-control" hidden><label for="wing-pitch">Wing pitch</label><input type="range" id="wing-pitch" min="-18" max="18" step="1" value="5"><output for="wing-pitch" id="pitch-output">5°</output></div>
-    </figure>
+<figure class="aero-demo" aria-labelledby="aero-title">
+  <figcaption class="aero-head"><strong id="aero-title">Pressure over a swept wing</strong><span class="aero-status" id="aero-regime">Transonic flow</span></figcaption>
+  <div class="aero-stage">
+    <img src="assets/wing-sections.webp" width="720" height="387" alt="Section lines through a swept wing." id="aero-fallback">
+    <canvas id="aero-field" tabindex="0" hidden aria-label="Interactive upper-surface pressure map of a swept wing" aria-describedby="aero-help"></canvas>
+  </div>
+  <div class="aero-interactive" hidden>
+    <div class="aero-scale" aria-label="Upper-surface pressure coefficient scale"><span>Surface <i>C</i><sub>p</sub></span><div><div class="aero-ramp"></div><div class="aero-ticks"><span>−1.5</span><span>−1</span><span>−0.5</span><span>0</span><span>+0.5</span><span>+1</span></div></div></div>
+    <div class="aero-variables">
+      <label>Freestream Mach <output for="aero-mach" id="aero-mach-out">0.84</output><input type="range" id="aero-mach" min="0" max="1" step="0.01" value="0.84"></label>
+      <label>Angle of attack <output for="aero-alpha" id="aero-alpha-out">3.0°</output><input type="range" id="aero-alpha" min="-2" max="8" step="0.5" value="3"></label>
+    </div>
+    <div class="aero-tools"><span id="aero-help">Move over the wing, drag on touch, or focus it and use arrow keys to orbit.</span><button type="button" id="aero-motion">Pause traces</button></div>
+    <details class="aero-method"><summary>How to read the contours</summary><p>Blue marks low surface pressure. Where blue changes abruptly to green, the flow compresses through a shock. At Mach 0.84 and about 3° incidence the map interpolates upper-surface pressure taps from the ONERA M6 wind-tunnel experiment. Other settings illustrate how the pattern can change. At rest, the pressure coefficient is undefined.</p><p><a href="https://www.grc.nasa.gov/WWW/wind/valid/m6wing/m6wing.html">ONERA M6 measurements at NASA Glenn</a> · <a href="https://www.nasa.gov/history/x1/x.html">NACA transonic flight measurements</a></p></details>
+  </div>
+</figure>
+
   </div>
 </section>
 
-<div class="tray" id="tray" hidden><div class="tray-inner"><span class="tray-title">Worktable</span><button data-open="log" aria-controls="panel-log"><i class="glyph log" aria-hidden="true"></i><span>Project log</span></button><button data-open="lab" aria-controls="panel-lab"><i class="glyph wave" aria-hidden="true"></i><span>Wing &amp; flow lab</span></button><button data-open="hangar" aria-controls="panel-hangar"><i class="glyph air" aria-hidden="true"></i><span>Aircraft viewer</span></button><button data-open="library" aria-controls="panel-library"><i class="glyph book" aria-hidden="true"></i><span>Paper library</span></button></div></div>
-<section id="work" class="wrap section">
-<div class="section-head"><div><p class="eyebrow"><i class="rule"></i>Research &amp; engineering</p><h2>Selected work</h2></div><p class="aside-copy">A few projects I’ve spent time with. The project log also covers my work in structures, thermal energy and the workshop.</p></div>
-<div class="studies">
-<article class="study"><div class="thumb crop"><img loading="lazy" width="1536" height="1024" src="assets/dragonfly.webp" alt="Illustrative close-up of a dragonfly wing."></div>
-<p class="eyebrow">MSc research · In progress</p><h3>Insect-scale flight</h3><p>Studying the unsteady forces on a wing as it reverses direction during a stroke.</p>
-<button class="launch-text" data-open="lab" data-mode="wing" hidden>Explore the wing stroke</button><details><summary>Research note</summary><p>I chose flapping wings for my master’s research after working on fixed-wing aircraft. I compared a dry-wing CFD model with a published flapping-wing study, checking lift, drag and circulation as well as the structure of the flow.</p><p>That comparison is one completed step within my ongoing thesis.</p><a href="https://doi.org/10.1017/jfm.2024.680">Benchmark study by Li &amp; Nabawy</a></details></article>
-<article class="study"><div class="airpair"><figure><img loading="lazy" src="assets/piero-profile.webp" alt="Jet I side profile"><figcaption>Jet I</figcaption></figure><figure><img loading="lazy" src="assets/piero-iii-profile.webp" alt="Jet III side profile"><figcaption>Jet III</figcaption></figure></div>
-<p class="eyebrow">Aircraft design · Ongoing role</p><h3>The Piero aircraft series</h3><p>My part in the series is modeling airfoil sections, wings and exterior components in SolidWorks. Explore the Jet I and Jet III in the aircraft viewer.</p>
-<button class="launch-text" data-open="hangar" hidden>Compare both aircraft</button><details><summary>Design note</summary><p>At Moving Terrain AG, I work on exterior geometry for the Piero business aircraft series. My part of the design process takes me from the profile of an airfoil to the three-dimensional surface of a wing.</p><p>The project viewer pairs Piero’s official Jet I and Jet III renderings. My contribution is to the team’s CAD work.</p><a href="https://piero.aero/">Visit Piero</a></details></article>
-<article class="study"><div class="thumb"><img loading="lazy" width="720" height="387" src="assets/enclosure.webp" alt="Schematic of an off-centre heated cylinder in a tilted square enclosure."></div>
-<p class="eyebrow">Thermofluids · Published</p><h3>Heat in a tilted enclosure</h3><p>How does moving a heated cylinder inside a cooled square change the heat it transfers to the air?</p>
-<button class="launch-text" data-open="lab" data-mode="heat" hidden>Inspect the enclosure</button><details><summary>Study note</summary><p>I contributed to the CFD methodology, curated simulation data and visualized the effects of cylinder position and Rayleigh number. Our results showed that the average Nusselt number varied nonlinearly with cylinder position.</p><p>The drawing shows the enclosure geometry schematically.</p><a href="https://doi.org/10.1016/j.ijft.2026.101669">Read the published study</a></details></article>
-</div></section>
+<section id="work" class="wrap section university-projects" aria-labelledby="projects-title">
+  <p class="eyebrow">University of Balamand</p>
+  <h2 id="projects-title">Engineering projects</h2>
+  <article class="university-project" id="wildfire-uav">
+    <div class="project-visual">
+      <figure>
+        <img src="assets/wildfire-canopy.webp" width="1400" height="933" loading="lazy" alt="Overhead concept rendering of the green-and-white fixed-wing aircraft above a forest canopy.">
+        <figcaption>Forest patrol concept rendering</figcaption>
+      </figure>
+      <details class="project-plates"><summary>View the aircraft from the front</summary>
+        <figure><img src="assets/wildfire-hangar.webp" width="1400" height="933" loading="lazy" alt="Front-view rendering showing the aircraft’s long wing, landing gear and camera beneath the nose."><figcaption>The forward sensor mount and landing gear.</figcaption></figure>
+      </details>
+    </div>
+    <div class="project-story">
+      <p class="eyebrow">BSc graduation project · MECH390</p>
+      <h3>A UAV for early forest fire detection</h3>
+      <p>Spotting a fire early means watching a large area for a long time. For my senior project, our team designed a long-endurance aircraft around that need. A high-aspect-ratio wing supported efficient patrol flight, while a rear-mounted propeller left room for a camera under the nose.</p>
+      <p>We studied how the aircraft would fly and how its fuselage and landing gear would carry load. The project culminated in a preliminary design.</p>
+    </div>
+  </article>
+  <article class="university-project" id="agricultural-uav">
+    <div class="project-visual">
+      <figure>
+        <img src="assets/agricultural-cutaway.webp" width="1400" height="953" loading="lazy" alt="Three-quarter cutaway render of the electric fixed-wing design with its transparent fuselage, internal frames and electronics.">
+        <figcaption>CAD-based cutaway with an illustrative electronics layout.</figcaption>
+      </figure>
+    </div>
+    <div class="project-story">
+      <p class="eyebrow">Aircraft Design II · AERO422</p>
+      <h3>An electric aircraft for crop spraying</h3>
+      <p>Our course team developed a fixed-wing aircraft for agricultural fields. As the tank empties, the aircraft gets lighter and its balance changes. We used that problem to connect the aerodynamic sizing, stability analysis and structural design.</p>
+      <p>The transparent fuselage shows where the structure leaves room for onboard electronics. The report’s equipment list includes a battery, flight controller, GPS and compass module, telemetry radio and radio-control receiver.</p>
+    </div>
+  </article>
+  <article class="university-project" id="composite-valve">
+    <div class="project-visual">
+      <figure>
+        <img src="assets/valve-render.webp" width="1100" height="619" loading="lazy" alt="Studio rendering of the closed two-leaflet valve, with two D-shaped leaves seated side by side inside a circular ring.">
+        <figcaption>Rendering based on the project’s closed-valve CAD model.</figcaption>
+      </figure>
+      <details class="project-plates"><summary>View two figures from the report</summary>
+        <figure><img src="assets/valve-leaflet-cad.webp" width="1042" height="412" loading="lazy" alt="Report figure showing the full valve CAD assembly, single leaflet and its midsurface for analysis."><figcaption>From the assembly to a single leaflet midsurface for FEMAP.</figcaption></figure>
+        <figure><img src="assets/valve-layup-study.webp" width="800" height="512" loading="lazy" alt="Bar chart comparing predicted mean fatigue safety factors for candidates grouped by outer-ply orientation. The zero-degree group has the larger modelled margin."><figcaption>Effect of the outer-ply angle on predicted fatigue safety factor.</figcaption></figure>
+      </details>
+    </div>
+    <div class="project-story">
+      <p class="eyebrow">Mechanics of Composite Materials · MECH412</p>
+      <h3>Composite leaflets for an artificial heart valve</h3>
+      <p>How much can the order of the plies change a heart-valve leaflet’s response to pressure? Our group screened laminate stacking sequences in MATLAB and analyzed 50 candidates in FEMAP with the valve closed.</p>
+      <p>Under the modeled load, candidates with 0° surface plies generally had better predicted safety margins. The study covered structural simulation. Dynamic opening, blood flow and experimental testing were left for future work.</p>
+    </div>
+  </article>
+</section>
 
+<section id="research" class="research-band"><div class="wrap section">
+<div class="section-head"><div><p class="eyebrow"><i class="rule"></i>Research &amp; design</p><h2>Wings, air and heat</h2></div>
+<p class="aside-copy">In my research I study what moves through a fluid. In aircraft design I work on the surface the fluid meets.</p></div>
+<div class="research-pair">
+<article class="study"><div class="thumb crop"><img loading="lazy" width="1536" height="1024" src="assets/dragonfly.webp" alt="Illustration of the fine veins in a dragonfly wing."></div>
+<p class="eyebrow">MSc research · In progress</p><h3>When a wing reverses</h3><p>At insect scale, a wing meets air set in motion by its previous stroke. For my master’s thesis I benchmarked a dry-wing CFD model against published lift, drag, circulation and flow structures. That comparison is complete, and the thesis is ongoing.</p>
+<details class="interactive-study"><summary>Explore the flapping stroke</summary><div class="research-demo"><p>A flapping wing sweeps out, slows at the end of the stroke and returns. Scrub through one cycle to see the same positions on the outward and return strokes.</p><div class="wing-drawing"><canvas id="stroke-canvas" width="720" height="310" role="img" aria-label="Schematic top view of a wing pivoting through a stroke"></canvas></div>
+<div class="control-line"><label for="phase">Stroke phase</label><output for="phase" id="phase-out">0% · First reversal</output></div><input type="range" id="phase" min="0" max="100" value="0"><button class="work-btn" id="play" aria-pressed="false">Play stroke</button>
+<p class="small">Illustrative motion. In my MSc, I benchmarked a dry-wing CFD model against published lift, drag, circulation and flow structure. The thesis is in progress. <a href="https://doi.org/10.1017/jfm.2024.680">Read the benchmark study</a></p></div></details></article>
+<article class="study"><div class="thumb"><img loading="lazy" width="720" height="387" src="assets/enclosure.webp" alt="Heated cylinder inside a tilted square enclosure."></div><p class="eyebrow">Thermofluids · Published study</p><h3>Heat in a tilted enclosure</h3><p>Where should a heated cylinder sit inside a cooled square? I helped develop the CFD methodology and visualized how its position changed natural convection. The average Nusselt number varied nonlinearly as the cylinder moved.</p>
+<details class="interactive-study"><summary>Explore the enclosure geometry</summary><div class="research-demo"><p>Move the heated cylinder inside the tilted enclosure. As it approaches a corner, the gap between the cylinder and the cooled walls narrows.</p>
+<div class="apparatus" role="img" aria-label="A heated cylinder inside a square enclosure tilted by 45 degrees"><i class="wall"></i><i id="source-disc"></i></div><div class="control-line"><label for="offset">Cylinder position</label><output id="heat-out" for="offset">Centre</output></div><input type="range" id="offset" min="-2" max="2" value="0"><p class="small">This control illustrates the geometry. In the published simulations, the average Nusselt number varied nonlinearly with cylinder position. I contributed to the CFD methodology, data curation and visualization. <a href="https://doi.org/10.1016/j.ijft.2026.101669">Read our paper</a></p></div></details></article>
+</div>
+<article class="piero-design"><div><p class="eyebrow">Aircraft design · Moving Terrain AG</p><h3>The Piero aircraft series</h3><p>I model airfoil sections, wings and exterior components in SolidWorks. The aft view shows the Jet I’s central exhaust and the Jet III’s paired nacelles.</p><p><a href="https://piero.aero/">Visit Piero</a></p></div><div><div class="aircraft-views"><figure data-plane="i"><figcaption>Piero Jet I</figcaption><img src="assets/piero-profile.webp" alt="Piero Jet I, profile view from Piero’s gallery" data-angle-image="Profile"><img src="assets/piero-plan.webp" alt="Piero Jet I, wing view from Piero’s gallery" data-angle-image="Wing" hidden><img src="assets/piero-aft.webp" alt="Piero Jet I, tail view from Piero’s gallery" data-angle-image="Tail" hidden><a href="https://piero.aero/gallery/gallery-pji.html">© Piero · Gallery</a></figure><figure data-plane="iii"><figcaption>Piero Jet III</figcaption><img src="assets/piero-iii-profile.webp" alt="Piero Jet III, profile view from Piero’s gallery" data-angle-image="Profile"><img src="assets/piero-iii-wing.webp" alt="Piero Jet III, wing view from Piero’s gallery" data-angle-image="Wing" hidden><img src="assets/piero-iii-tail.webp" alt="Piero Jet III, tail view from Piero’s gallery" data-angle-image="Tail" hidden><a href="https://piero.aero/gallery/gallery-pjiii.html">© Piero · Gallery</a></figure></div><div class="seg" role="group" aria-label="Viewing angle"><button data-angle="Profile" aria-pressed="true">Profile</button><button data-angle="Wing" aria-pressed="false">Wing</button><button data-angle="Tail" aria-pressed="false">Tail</button></div></div></article>
+</div></section>
 <section id="publications" class="papers section"><div class="wrap"><div class="section-head"><div><p class="eyebrow"><i class="rule"></i>Bibliography</p><h2>Selected publications</h2></div><p class="aside-copy">Co-authored research in heat transfer, thermal storage and building energy.</p></div>
-<button class="launch-text" data-open="library" hidden>Open searchable library</button><ol class="paper-list">
+<div class="paper-search" hidden><label for="paper-search">Search publications</label><input id="paper-search" type="search" placeholder="Title, author or journal"><span id="paper-total" role="status"></span></div><ol class="paper-list">
 <li><span class="year">2026</span><div><h3><a href="https://doi.org/10.1016/j.ijft.2026.101669">Natural convection heat transfer from an eccentric circular cylinder inside a 45° tilted square enclosure</a></h3><p>M. Daaboul, R. Samrout, <strong>R. Harake</strong>, M. Sabat, C. Lahoud</p><p><i>International Journal of Thermofluids</i> · 35, 101669</p></div><span class="kind">Journal article</span></li>
 <li><span class="year">2026</span><div><h3><a href="https://doi.org/10.1108/MEQ-06-2025-0425">Performance assessment and numerical simulation of Beechwood solar drying in Lebanon: a parametric approach</a></h3><p>S. Youssef, C. B. Lahoud, M. Fatfat, <strong>R. Al Harake</strong></p><p><i>Management of Environmental Quality</i> · 37(3), 729–753</p></div><span class="kind">Journal article</span></li>
 <li><span class="year">2025</span><div><h3><a href="https://doi.org/10.3390/buildings15030464">Enhancing Energy Efficiency in Mediterranean Large-Scale Buildings: A Study on Mobilized Thermal-Energy-Storage Systems</a></h3><p>C. Lahoud, <strong>R. Harake</strong>, M. Fatfat, S. Bazi</p><p><i>Buildings</i> · 15(3), 464</p></div><span class="kind">Journal article</span></li>
@@ -62,8 +130,8 @@
 <section class="wrap section split" id="experience"><div><p class="eyebrow"><i class="rule"></i>In practice</p><h2>Experience</h2></div>
 <div class="roles">
 <article><p class="period">January 2025 – present</p><h3>Aircraft design</h3><p class="org">Moving Terrain AG · Piero</p><p>I model airfoils, wings and exterior components for the Piero series in SolidWorks.</p></article>
-<article><p class="period">September 2024 – present</p><h3>Research assistant</h3><p class="org">University of Balamand</p><p>Modeling solar drying in MATLAB, investigating phase change materials in buildings and studying natural convection with CFD.</p></article>
-<article><p class="period">April – October 2026</p><h3>FEA stress engineer</h3><p class="org">FTMSolutions</p><p>Assessed loads, displacements and stresses in aircraft cabin interiors and prepared structural substantiation reports.</p></article>
+<article><p class="period">September 2024 – present</p><h3>Research assistant</h3><p class="org">University of Balamand</p><p>I modeled heat transfer in beechwood during solar drying in MATLAB. My other studies cover natural convection, thermal energy storage and phase change materials in Lebanese building envelopes.</p></article>
+<article><p class="period">April – October 2026</p><h3>FEA stress engineer</h3><p class="org">FTMSolutions</p><p>Assessed loads, displacements and stresses in Boeing 787 and Airbus A380 cabin interiors and prepared structural substantiation reports.</p></article>
 <article><p class="period">July 2024 – May 2025</p><h3>Aerodynamicist</h3><p class="org">Balamand Racing Team</p><p>Designed and optimized bodywork components for the university’s Formula Student UK team.</p></article>
 <article><p class="period">June – August 2023</p><h3>Aircraft maintenance intern</h3><p class="org">Lebanese Air Force</p><p>Supported hands-on aircraft maintenance and safety work.</p></article></div></section>
 
@@ -77,18 +145,7 @@
 <article><h3>Geometry &amp; structures</h3><p>SolidWorks for aircraft geometry. FEMAP and finite element analysis for structural work. I also use engineering spreadsheets for loads and substantiation.</p></article><article><h3>Languages</h3><p>Arabic (native) and English (fluent).</p></article></div></section>
 <section id="contact" class="contact-section"><div class="wrap contact-inner">
 <div><p class="eyebrow pale"><i class="rule"></i>Contact</p><h2>Get in touch.</h2><p>I welcome questions about my work and conversations about research or engineering collaborations.</p></div>
-<div class="email-block"><a href="mailto:rawad.harake@std.balamand.edu.lb">rawad.harake@std.balamand.edu.lb</a><span>Email Rawad</span></div>
+<div class="email-block"><a href="mailto:rawad.harake@std.balamand.edu.lb">rawad.harake@std.balamand.edu.lb</a><span>University email</span><a class="social-link" href="https://www.linkedin.com/in/rawad-al-harake-3255621b4/">Find me on LinkedIn</a></div>
 </div></section>
 </main><footer><div class="wrap"><a class="wordmark" href="#top"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>Rawad Al Harake</a><a href="#top">Back to top</a></div></footer>
-<section id="panel-log" class="work-window" role="dialog" aria-labelledby="win-log" tabindex="-1" data-state="closed" hidden><div class="window-bar"><span class="handle" aria-hidden="true">⠿</span><strong id="win-log">Project log</strong><div class="window-buttons"><button data-win="min" aria-label="Minimize Project log" title="Minimize">−</button><button class="maximize" data-win="max" aria-label="Maximize Project log" title="Maximize" aria-pressed="false">□</button><button data-win="close" aria-label="Close Project log" title="Close">×</button></div></div><div class="window-body"><p class="eyebrow">Research &amp; engineering</p><h3>Inside my project log</h3><label for="project-search">Search my work</label><input type="search" id="project-search" placeholder="Try structures, aircraft or energy"><div class="seg" role="group" aria-label="Project discipline"><button data-field="All" aria-pressed="true">All</button><button data-field="Research" aria-pressed="false">Research</button><button data-field="Design" aria-pressed="false">Design</button><button data-field="Structures" aria-pressed="false">Structures</button><button data-field="Practice" aria-pressed="false">Practice</button></div><p id="project-total" class="small" role="status"></p><div class="records"><details class="record" data-discipline="Research"><summary><span><small>MSc thesis · University of Balamand</small>Insect-scale wings</span></summary><p>I compare simulated forces and flow structures across a flapping stroke. The dry-wing benchmark is complete, and the thesis is ongoing.</p><button class="launch-text" data-open="lab" data-preset="wing">Open wing &amp; flow lab</button></details><details class="record" data-discipline="Design"><summary><span><small>Moving Terrain AG · Aircraft design</small>Piero aircraft series</span></summary><p>I model airfoils, wings and exterior components for the series in SolidWorks. Piero’s galleries show the Jet I and Jet III.</p><button class="launch-text" data-open="hangar" data-preset="">Open aircraft viewer</button></details><details class="record" data-discipline="Research"><summary><span><small>University of Balamand · Published study</small>Natural convection</span></summary><p>I helped develop the CFD methodology and organized and visualized the simulation data for a heated cylinder inside a tilted enclosure.</p><button class="launch-text" data-open="lab" data-preset="heat">Open wing &amp; flow lab</button></details><details class="record" data-discipline="Structures"><summary><span><small>FTMSolutions · FEA stress engineer</small>Aircraft cabin interiors</span></summary><p>I assessed loads, stresses and displacements in cabin interiors for the Boeing 787 and Airbus A380, and prepared engineering spreadsheets and structural substantiation reports.</p></details><details class="record" data-discipline="Design"><summary><span><small>Balamand Racing Team · Aerodynamicist</small>Formula Student bodywork</span></summary><p>I designed and optimized bodywork components for the university’s Formula Student UK team.</p></details><details class="record" data-discipline="Research"><summary><span><small>University of Balamand · Published study</small>Solar drying of beechwood</span></summary><p>I worked on modeling heat transfer during solar drying in MATLAB. The paper examines how drying conditions affect beechwood in Lebanon.</p><button class="launch-text" data-open="library" data-preset="solar drying">Open paper library</button></details><details class="record" data-discipline="Research"><summary><span><small>University of Balamand · Journal and conference work</small>Thermal storage in buildings</span></summary><p>Our work covers mobilized thermal energy storage and the placement of phase change materials in building envelopes across Lebanese climates.</p><button class="launch-text" data-open="library" data-preset="">Open paper library</button></details><details class="record" data-discipline="Practice"><summary><span><small>Lebanese Air Force · Internship</small>Aircraft maintenance</span></summary><p>I supported hands-on aircraft maintenance during my summer internship.</p></details></div></div></section>
-<section id="panel-lab" class="work-window" role="dialog" aria-labelledby="win-lab" tabindex="-1" data-state="closed" hidden><div class="window-bar"><span class="handle" aria-hidden="true">⠿</span><strong id="win-lab">Wing &amp; flow lab</strong><div class="window-buttons"><button data-win="min" aria-label="Minimize Wing &amp; flow lab" title="Minimize">−</button><button class="maximize" data-win="max" aria-label="Maximize Wing &amp; flow lab" title="Maximize" aria-pressed="false">□</button><button data-win="close" aria-label="Close Wing &amp; flow lab" title="Close">×</button></div></div><div class="window-body"><p class="eyebrow">Research lab</p><h3>Geometry in motion</h3><div class="seg" role="group" aria-label="Research study"><button data-lab="wing" aria-pressed="true">Flapping wing</button><button data-lab="heat" aria-pressed="false">Heated enclosure</button></div>
-<div data-experiment="wing"><p>A flapping wing sweeps out, slows at the end of the stroke and returns. Scrub through one cycle to see the same positions on the outward and return strokes.</p><div class="wing-drawing"><canvas id="stroke-canvas" width="720" height="310" role="img" aria-label="Schematic top view of a wing pivoting through a stroke"></canvas></div>
-<div class="control-line"><label for="phase">Stroke phase</label><output for="phase" id="phase-out">0% · First reversal</output></div><input type="range" id="phase" min="0" max="100" value="0"><button class="work-btn" id="play" aria-pressed="false">Play stroke</button>
-<p class="small">Illustrative motion. In my MSc, I benchmarked a dry-wing CFD model against published lift, drag, circulation and flow structure. The thesis is in progress. <a href="https://doi.org/10.1017/jfm.2024.680">Read the benchmark study</a></p></div>
-<div data-experiment="heat" hidden><p>Move the heated cylinder inside the tilted enclosure. As it approaches a corner, the gap between the cylinder and the cooled walls narrows.</p>
-<div class="apparatus" role="img" aria-label="A heated cylinder inside a square enclosure tilted by 45 degrees"><i class="wall"></i><i id="source-disc"></i></div><div class="control-line"><label for="offset">Cylinder position</label><output id="heat-out" for="offset">Centre</output></div><input type="range" id="offset" min="-2" max="2" value="0"><p class="small">This control illustrates the geometry. In the published simulations, the average Nusselt number varied nonlinearly with cylinder position. I contributed to the CFD methodology, data curation and visualization. <a href="https://doi.org/10.1016/j.ijft.2026.101669">Read our paper</a></p></div></div></section>
-<section id="panel-hangar" class="work-window" role="dialog" aria-labelledby="win-hangar" tabindex="-1" data-state="closed" hidden><div class="window-bar"><span class="handle" aria-hidden="true">⠿</span><strong id="win-hangar">Aircraft viewer</strong><div class="window-buttons"><button data-win="min" aria-label="Minimize Aircraft viewer" title="Minimize">−</button><button class="maximize" data-win="max" aria-label="Maximize Aircraft viewer" title="Maximize" aria-pressed="false">□</button><button data-win="close" aria-label="Close Aircraft viewer" title="Close">×</button></div></div><div class="window-body"><p class="eyebrow">Aircraft design · Moving Terrain AG</p><h3>Two aircraft, three views.</h3><p>Look along the fuselage, then around the tail. Both aircraft have a high tailplane. The Jet I’s central exhaust and the Jet III’s paired engine nacelles are easiest to distinguish from the aft end.</p>
-<div class="seg" role="group" aria-label="Aircraft selection"><button data-model="both" aria-pressed="true">Compare both</button><button data-model="i" aria-pressed="false">Jet I</button><button data-model="iii" aria-pressed="false">Jet III</button></div>
-<div class="aircraft-views"><figure data-plane="i"><figcaption>Piero Jet I</figcaption><img src="assets/piero-profile.webp" alt="Piero Jet I, profile view from Piero’s gallery" data-angle-image="Profile"><img src="assets/piero-plan.webp" alt="Piero Jet I, wing view from Piero’s gallery" data-angle-image="Wing" hidden><img src="assets/piero-aft.webp" alt="Piero Jet I, tail view from Piero’s gallery" data-angle-image="Tail" hidden><a href="https://piero.aero/gallery/gallery-pji.html">© Piero · Gallery</a></figure><figure data-plane="iii"><figcaption>Piero Jet III</figcaption><img src="assets/piero-iii-profile.webp" alt="Piero Jet III, profile view from Piero’s gallery" data-angle-image="Profile"><img src="assets/piero-iii-wing.webp" alt="Piero Jet III, wing view from Piero’s gallery" data-angle-image="Wing" hidden><img src="assets/piero-iii-tail.webp" alt="Piero Jet III, tail view from Piero’s gallery" data-angle-image="Tail" hidden><a href="https://piero.aero/gallery/gallery-pjiii.html">© Piero · Gallery</a></figure></div><div class="seg" role="group" aria-label="Viewing angle"><button data-angle="Profile" aria-pressed="true">Profile</button><button data-angle="Wing" aria-pressed="false">Wing</button><button data-angle="Tail" aria-pressed="false">Tail</button></div><p class="small">My contribution to the Piero series is CAD modeling of airfoils, wings and exterior components. The renderings show the team’s designs. Views are independently framed.</p></div></section>
-<section id="panel-library" class="work-window" role="dialog" aria-labelledby="win-library" tabindex="-1" data-state="closed" hidden><div class="window-bar"><span class="handle" aria-hidden="true">⠿</span><strong id="win-library">Paper library</strong><div class="window-buttons"><button data-win="min" aria-label="Minimize Paper library" title="Minimize">−</button><button class="maximize" data-win="max" aria-label="Maximize Paper library" title="Maximize" aria-pressed="false">□</button><button data-win="close" aria-label="Close Paper library" title="Close">×</button></div></div><div class="window-body"><p class="eyebrow">Publications · 2025–2026</p><h3>At the reading table</h3><label for="paper-search">Find a title, author or journal</label><input type="search" id="paper-search" placeholder="Try solar drying or convection"><div class="seg" role="group" aria-label="Publication type"><button data-type="all" aria-pressed="true">All</button><button data-type="journal" aria-pressed="false">Journal articles</button><button data-type="conference" aria-pressed="false">Conference papers</button></div><p id="paper-total" role="status" class="small"></p><ol id="shelf"></ol></div></section>
 </body></html>
